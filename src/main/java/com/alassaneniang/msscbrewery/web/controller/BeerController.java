@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Deprecated
@@ -53,14 +50,5 @@ public class BeerController {
         beerService.deleteBeerById( beerId );
     }
 
-    @ExceptionHandler( ConstraintViolationException.class )
-    public ResponseEntity<List> validationErrorHandler ( ConstraintViolationException exception ) {
-        List<String> errors = new ArrayList<>( exception.getConstraintViolations().size() );
-        exception.getConstraintViolations()
-                .forEach( constraintViolation -> {
-                    errors.add( constraintViolation.getPropertyPath() + ": " + constraintViolation.getMessage() );
-                } );
-        return new ResponseEntity<>( errors, HttpStatus.BAD_REQUEST );
-    }
 
 }

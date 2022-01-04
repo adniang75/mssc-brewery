@@ -8,10 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Validated
@@ -52,14 +49,6 @@ public class BeerControllerV2 {
     @ResponseStatus( HttpStatus.NO_CONTENT )
     public void handleDelete ( @PathVariable( "beerId" ) UUID beerId ) {
         beerService.deleteBeerById( beerId );
-    }
-
-    @ExceptionHandler( ConstraintViolationException.class )
-    public ResponseEntity<List<String>> validationErrorHandler ( ConstraintViolationException exception ) {
-        List<String> errors = new ArrayList<>( exception.getConstraintViolations().size() );
-        exception.getConstraintViolations()
-                .forEach( constraintViolation -> errors.add( constraintViolation.getPropertyPath() + ": " + constraintViolation.getMessage() ) );
-        return new ResponseEntity<>( errors, HttpStatus.BAD_REQUEST );
     }
 
 }
