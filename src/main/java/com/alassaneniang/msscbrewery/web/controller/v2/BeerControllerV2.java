@@ -5,6 +5,7 @@ import com.alassaneniang.msscbrewery.web.services.v2.BeerServiceV2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequestMapping( "/api/v2/beer" )
 public class BeerControllerV2 {
@@ -53,12 +55,10 @@ public class BeerControllerV2 {
     }
 
     @ExceptionHandler( ConstraintViolationException.class )
-    public ResponseEntity<List> validationErrorHandler ( ConstraintViolationException exception ) {
+    public ResponseEntity<List<String>> validationErrorHandler ( ConstraintViolationException exception ) {
         List<String> errors = new ArrayList<>( exception.getConstraintViolations().size() );
         exception.getConstraintViolations()
-                .forEach( constraintViolation -> {
-                    errors.add( constraintViolation.getPropertyPath() + ": " + constraintViolation.getMessage() );
-                } );
+                .forEach( constraintViolation -> errors.add( constraintViolation.getPropertyPath() + ": " + constraintViolation.getMessage() ) );
         return new ResponseEntity<>( errors, HttpStatus.BAD_REQUEST );
     }
 
