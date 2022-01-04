@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
-@Deprecated
 @RestController
 @RequestMapping( "/api/v1/beer" )
 public class BeerController {
@@ -29,7 +29,7 @@ public class BeerController {
     }
 
     @PostMapping // POST - create a new beer
-    public ResponseEntity<BeerDTO> handlePost ( @RequestBody BeerDTO beerDTO ) {
+    public ResponseEntity<BeerDTO> handlePost ( @Valid @RequestBody BeerDTO beerDTO ) {
         BeerDTO saveDTO = beerService.saveNewBeer( beerDTO );
         HttpHeaders headers = new HttpHeaders();
         // TODO: add hostname to url
@@ -38,7 +38,7 @@ public class BeerController {
     }
 
     @PutMapping( { "/{beerId}" } ) // PUT - update an existing beer
-    public ResponseEntity<BeerDTO> handleUpdate ( @PathVariable( "beerId" ) UUID beerId, @RequestBody BeerDTO beerDTO ) {
+    public ResponseEntity<BeerDTO> handleUpdate ( @PathVariable( "beerId" ) UUID beerId, @Valid @RequestBody BeerDTO beerDTO ) {
         beerService.updateBeer( beerId, beerDTO );
         return new ResponseEntity<>( HttpStatus.NO_CONTENT );
     }
