@@ -4,7 +4,7 @@ import com.alassaneniang.msscbrewery.domain.Beer;
 import com.alassaneniang.msscbrewery.web.model.v2.BeerDTOV2;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper( uses = { DateMapper.class } )
 public interface BeerMapper {
 
     BeerDTOV2 beerToBeerDTOV2 ( Beer beer );
