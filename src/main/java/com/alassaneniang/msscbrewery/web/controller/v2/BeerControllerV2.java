@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,7 +32,7 @@ public class BeerControllerV2 {
     }
 
     @PostMapping // POST - create a new beer
-    public ResponseEntity<BeerDTOV2> handlePost ( @RequestBody BeerDTOV2 beerDTO ) {
+    public ResponseEntity<BeerDTOV2> handlePost ( @Valid @RequestBody BeerDTOV2 beerDTO ) {
         BeerDTOV2 saveDTO = beerService.saveNewBeer( beerDTO );
         HttpHeaders headers = new HttpHeaders();
         // TODO: add hostname to url
@@ -37,7 +41,7 @@ public class BeerControllerV2 {
     }
 
     @PutMapping( { "/{beerId}" } ) // PUT - update an existing beer
-    public ResponseEntity<BeerDTOV2> handleUpdate ( @PathVariable( "beerId" ) UUID beerId, @RequestBody BeerDTOV2 beerDTO ) {
+    public ResponseEntity<BeerDTOV2> handleUpdate ( @PathVariable( "beerId" ) UUID beerId, @Valid @RequestBody BeerDTOV2 beerDTO ) {
         beerService.updateBeer( beerId, beerDTO );
         return new ResponseEntity<>( HttpStatus.NO_CONTENT );
     }
@@ -46,6 +50,16 @@ public class BeerControllerV2 {
     @ResponseStatus( HttpStatus.NO_CONTENT )
     public void handleDelete ( @PathVariable( "beerId" ) UUID beerId ) {
         beerService.deleteBeerById( beerId );
+    }
+
+    @ExceptionHandler( ConstraintViolationException.class )
+    public ResponseEntity<List> validationErrorHandler ( ConstraintViolationException exception ) {
+        List<String> errors = new ArrayList<>( exception.getConstraintViolations().size() );
+        exception.getConstraintViolations()
+                .forEach( constraintViolation -> {
+                    errors.add( constraintViolation.getPropertyPath() + ": " + constraintViolation.getMessage() );
+                } );
+        return new ResponseEntity<>( errors, HttpStatus.BAD_REQUEST );
     }
 
 }
