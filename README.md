@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/adniang75/mssc-brewery/tree/main.svg?style=svg)](https://circleci.com/gh/adniang75/mssc-brewery/tree/main)
 # Spring Boot Microservices With Spring Cloud
 
 ## Roadmap:
